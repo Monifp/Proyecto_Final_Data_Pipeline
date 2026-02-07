@@ -1,16 +1,14 @@
-import pandas as pd
 import os
 import glob
 import logging
-import subprocess  # Importante para ejecutar el segundo script
-from config import PATH_INPUT, PATH_OUTPUT, PATH_REJECTED, LOG_DIR, LOG_FILE
-from utils import limpiar_texto, obtener_metricas_y_duplicados, reparar_encoding
+import subprocess
+import pandas as pd
+from config import PATH_INPUT, PATH_OUTPUT, LOG_FILE
+from utils import limpiar_texto, reparar_encoding, obtener_metricas_y_duplicados
+from validaciones import validate_data
+from check_referencial import verificar_integridad
 
-# Configuración de carpetas y logs
-os.makedirs(PATH_OUTPUT, exist_ok=True)
-os.makedirs(PATH_REJECTED, exist_ok=True)
-os.makedirs(LOG_DIR, exist_ok=True)
-
+# Configuración centralizada de Logs
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -20,79 +18,59 @@ logging.basicConfig(
     ]
 )
 
-def procesar_archivo(path_completo):
-    nombre_original = os.path.basename(path_completo)
-    try:
-        # 1. LECTURA ROBUSTA
-        try:
-            df = pd.read_csv(path_completo, encoding='utf-8-sig', sep=None, engine='python')
-        except:
-            df = pd.read_csv(path_completo, encoding='latin-1', sep=None, engine='python')
-
-        # 2. REPARACIÓN DE DATOS Y COLUMNAS
-        df = df.map(reparar_encoding)
-        df.columns = [limpiar_texto(col) for col in df.columns]
-
-        # 3. AUDITORÍA DE CALIDAD (Duplicados)
-        nulos, df_dups = obtener_metricas_y_duplicados(df)
-        if not df_dups.empty:
-            nombre_rechazados = f"duplicados_{nombre_original}"
-            df_dups.to_csv(os.path.join(PATH_REJECTED, nombre_rechazados), index=False)
-            logging.warning(f"📊 {nombre_original}: {len(df_dups)} duplicados movidos a /rejected.")
-
-        # 4. LIMPIEZA FINAL
-        df = df.drop_duplicates(keep='first')
-        df = df.fillna({
-            col: 0 if df[col].dtype in ['int64', 'float64'] else 'desconocido' 
-            for col in df.columns
-        })
-        
-        # 5. GUARDADO
-        nombre_final = limpiar_texto(nombre_original.replace(".csv", "")) + "_limpio.csv"
-        path_destino = os.path.join(PATH_OUTPUT, nombre_final)
-        df.to_csv(path_destino, index=False)
-        logging.info(f"✅ Éxito: {nombre_final} | Filas finales: {len(df)}")
-
-    except Exception as e:
-        logging.error(f"❌ Error crítico en {nombre_original}: {str(e)}")
-
 def ejecutar_pipeline():
-    logging.info("🚀 --- INICIANDO PIPELINE GLOBAL ---")
-    
-    # --- FASE 1: INGESTA Y TRANSFORMACIÓN ---
-    patron = os.path.join(PATH_INPUT, "*.csv")
-    archivos = glob.glob(patron)
-    
+    logging.info("🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---")
+
+    # Identifiacion de archivos a procesar 
+    archivos = glob.glob(os.path.join(PATH_INPUT, "*.csv"))
     if not archivos:
-        logging.error(f"❌ No se encontraron CSVs en {PATH_INPUT}")
+        logging.error(f"❌ No se encontraron archivos en {PATH_INPUT}")
         return
 
-    for archivo in archivos:
-        procesar_archivo(archivo)
-    
-    logging.info("✔ Ingesta y Transformación completadas.")
+    # Procesamiento e ingesta de cada archivo
+    for ruta_archivo in archivos:
+        nombre_archivo = os.path.basename(ruta_archivo)
+        logging.info(f"📄 Procesando: {nombre_archivo}")
 
-    # --- FASE 2: CARGA A DUCKDB (LLAMADA AUTOMÁTICA) ---
-    logging.info("⏳ Iniciando etapa de Carga a DuckDB...")
+        try:
+            # Lectura del CSV con manejo de encoding y delimitadores variados
+            df = pd.read_csv(ruta_archivo, encoding='utf-8-sig', sep=None, engine='python')
+            
+            # Limpieza llamando a Utils 
+            df = df.map(reparar_encoding)
+            df.columns = [limpiar_texto(col) for col in df.columns]
+            
+            
+            # Si validate_data retorna False, abortamos el pipeline
+            if not validate_data(df, nombre_archivo):
+                logging.critical(f"🛑 Error de validación crítica en {nombre_archivo}. ABORTANDO PIPELINE.")
+                return 
+
+            # Guardado de archivo procesado
+            nombre_limpio = limpiar_texto(nombre_archivo.replace(".csv", "")) + "_limpio.csv"
+            df.to_csv(os.path.join(PATH_OUTPUT, nombre_limpio), index=False)
+            logging.info(f"✅ Archivo '{nombre_limpio}' listo para DuckDB.")
+
+        except Exception as e:
+            logging.error(f"❌ Error inesperado al procesar {nombre_archivo}: {e}")
+            return
+
+    # Carga a duckdb y creación del modelo estrella
+    logging.info("⏳ Iniciando carga y transformación en DuckDB...")
     try:
-   
-        directorio_actual = os.path.dirname(os.path.abspath(__file__))
-        script_carga = os.path.join(directorio_actual, "cargar_duckdb.py")
-        
-        resultado = subprocess.run(
-            ['python3', script_carga],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-        logging.info("✔ Transformación y Carga a DuckDB completada exitosamente.")
-        logging.info("🏁 --- PIPELINE FINALIZADO CON ÉXITO ---")
-        
-    except subprocess.CalledProcessError as e:
-        logging.error("❌ Error durante la carga a DuckDB:")
-        logging.error(e.stderr)
-    except Exception as e:
-        logging.error(f"❌ Error inesperado al llamar a DuckDB: {str(e)}")
+        script_carga = os.path.join(os.path.dirname(__file__), "cargar_duckdb.py")
+        subprocess.run(['python3', script_carga], check=True)
+        logging.info("✔ Carga y Modelo Estrella completados.")
+    except subprocess.CalledProcessError:
+        logging.error("❌ Falló la ejecución de cargar_duckdb.py")
+        return
+
+    # chequeo de integridad referencial
+    if verificar_integridad():
+        logging.info("🛡️ Integridad referencial verificada con éxito.")
+        logging.info("🏁 --- PIPELINE FINALIZADO EXITOSAMENTE ---")
+    else:
+        logging.error("❌ El pipeline terminó pero se detectaron inconsistencias en la DB.")
 
 if __name__ == "__main__":
     ejecutar_pipeline()

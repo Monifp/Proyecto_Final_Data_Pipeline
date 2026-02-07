@@ -21,15 +21,15 @@ def limpiar_texto(texto):
     if not isinstance(texto, str):
         return texto
     
-    # 1. Reparamos posibles caracteres rotos antes de limpiar
+    # Reparamos posibles caracteres rotos antes de limpiar
     texto = reparar_encoding(texto)
     
-    # 2. Normalizamos (quitar acentos y llevar a minúsculas)
+    # Normalizamos quitando acentos y llevando todo a minúsculas)
     texto = texto.lower().strip()
     texto_norm = unicodedata.normalize('NFKD', texto)
     solo_base = "".join([c for c in texto_norm if not unicodedata.combining(c)])
     
-    # 3. Formato final para SQL (snake_case)
+    # Formato final para SQL (snake_case)
     return solo_base.replace(" ", "_").replace("-", "_")
 
 def obtener_metricas_y_duplicados(df):
