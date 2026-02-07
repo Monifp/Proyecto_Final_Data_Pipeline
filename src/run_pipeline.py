@@ -19,7 +19,7 @@ logging.basicConfig(
 )
 
 def ejecutar_pipeline():
-    logging.info("🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---")
+    logging.info("🚀 --- INICIANDO PIPELINE---")
 
     # Identifiacion de archivos a procesar 
     archivos = glob.glob(os.path.join(PATH_INPUT, "*.csv"))
