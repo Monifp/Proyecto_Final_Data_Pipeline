@@ -1,0 +1,22 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# --- Datos ---
+data/ingested/*
+data/processed/*
+data/rejected/*
+data/database/*.db
+
+# --- Logs ---
+logs/*.log
+
+# --- Herramientas de Sistema y Editores ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
