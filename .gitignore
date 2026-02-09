@@ -10,6 +10,7 @@ data/ingested/*
 data/processed/*
 data/rejected/*
 data/database/*.db
+data/reports/*
 
 
 # --- Herramientas de Sistema y Editores ---

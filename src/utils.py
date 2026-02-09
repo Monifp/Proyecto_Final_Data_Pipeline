@@ -1,43 +1,32 @@
 import unicodedata
 import pandas as pd
+import logging
+import os
+from datetime import datetime
+from config import LOG_FILE, PATH_REJECTED
+
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[logging.FileHandler(LOG_FILE, mode='a', encoding='utf-8'), logging.StreamHandler()]
+    )
 
 def reparar_encoding(texto):
-    """
-    Detecta y corrige caracteres rotos (Mojibake) como Ã¡ -> á.
-    """
-    if not isinstance(texto, str):
-        return texto
-    try:
-        # Intenta revertir el error de interpretación latin-1/utf-8
-        return texto.encode('latin-1').decode('utf-8')
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        # Si da error, es porque el texto ya estaba bien o es irreparable
-        return texto
+    if not isinstance(texto, str): return texto
+    try: return texto.encode('latin-1').decode('utf-8')
+    except: return texto
 
 def limpiar_texto(texto):
-    """
-    Estandariza nombres para bases de datos: minúsculas, sin acentos y sin espacios.
-    """
-    if not isinstance(texto, str):
-        return texto
-    
-    # Reparamos posibles caracteres rotos antes de limpiar
-    texto = reparar_encoding(texto)
-    
-    # Normalizamos quitando acentos y llevando todo a minúsculas)
-    texto = texto.lower().strip()
+    if not isinstance(texto, str): return texto
+    texto = reparar_encoding(texto).lower().strip()
     texto_norm = unicodedata.normalize('NFKD', texto)
     solo_base = "".join([c for c in texto_norm if not unicodedata.combining(c)])
-    
-    # Formato final para SQL (snake_case)
     return solo_base.replace(" ", "_").replace("-", "_")
 
-def obtener_metricas_y_duplicados(df):
-    """
-    Calcula nulos y separa filas duplicadas para auditoría.
-    """
-    nulos_totales = df.isnull().sum().sum()
-    es_duplicado = df.duplicated(keep='first')
-    df_duplicados = df[es_duplicado]
-    
-    return nulos_totales, df_duplicados
+def registrar_rechazos(df_rechazados, nombre_archivo, motivo):
+    if not df_rechazados.empty:
+        ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+        path = os.path.join(PATH_REJECTED, f"rechazo_{motivo}_{ts}_{nombre_archivo}")
+        df_rechazados.to_csv(path, index=False)
+        logging.warning(f"🚨 Registros rechazados ({motivo}) guardados en: {path}")

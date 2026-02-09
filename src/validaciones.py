@@ -1,56 +1,53 @@
 import pandas as pd
 import logging
-import os
 from datetime import datetime
+from utils import registrar_rechazos
 
 def validate_data(df, nombre_archivo):
-    logging.info(f"🔍 Validando reglas específicas para: {nombre_archivo}")
+    logging.info(f"🔍 Validando calidad y rangos para: {nombre_archivo}")
     
-    # 1. Definimos las reglas según el nombre del archivo
-    # Usamos .lower() para que sea insensible a mayúsculas
+    # 1. Detección de Duplicados
+    duplicados = df[df.duplicated(keep='first')].copy()
+    df_unicos = df.drop_duplicates(keep='first').copy()
+    registrar_rechazos(duplicados, nombre_archivo, "duplicados")
+
+    # 2. Validación de Negocio y Rangos
     nombre = nombre_archivo.lower()
-    
-    mask_valid = pd.Series([True] * len(df)) # Por defecto, todo es válido
+    # Inicializamos la máscara (por defecto todo es válido)
+    mask_valid = pd.Series([True] * len(df_unicos), index=df_unicos.index)
 
-    try:
-        # --- REGLAS PARA VENTAS ---
-        if 'ventas' in nombre:
-            col_id = next((c for c in df.columns if 'id_venta' in c.lower() or 'venta_id' in c.lower()), None)
-            col_cant = next((c for c in df.columns if 'cant' in c.lower()), None)
+    if 'ventas' in nombre:
+        # Buscamos columnas críticas
+        col_id = next((c for c in df_unicos.columns if 'id_venta' in c.lower() or 'venta_id' in c.lower()), None)
+        col_fecha = next((c for c in df_unicos.columns if 'fecha' in c.lower()), None)
+        col_cant = next((c for c in df_unicos.columns if 'cant' in c.lower()), None)
+
+        if col_id and col_fecha and col_cant:
+            # A. Validación de Cantidad (Numérico > 0)
+            cant_numerica = pd.to_numeric(df_unicos[col_cant], errors='coerce')
+            mask_cant = (cant_numerica > 0)
+
+            # B. Validación de Fechas (Rango 1980 - Hoy)
+            # Convertimos a datetime (lo que no sea fecha será NaT)
+            fechas_dt = pd.to_datetime(df_unicos[col_fecha], errors='coerce')
             
-            if col_id and col_cant:
-                df[col_cant] = pd.to_numeric(df[col_cant], errors='coerce')
-                mask_valid = df[col_id].notnull() & (df[col_cant] > 0)
-            else:
-                logging.warning(f"⚠️ Faltan columnas críticas en archivo de ventas: {nombre_archivo}")
+            fecha_min = datetime(1980, 1, 1)
+            fecha_max = datetime.now()
+            
+            mask_fecha = (fechas_dt >= fecha_min) & (fechas_dt <= fecha_max)
 
-        # --- REGLAS PARA PRODUCTOS ---
-        elif 'producto' in nombre:
-            col_prod = next((c for c in df.columns if 'producto' in c.lower()), None)
-            if col_prod:
-                mask_valid = df[col_prod].notnull()
-
-        # --- REGLAS PARA MÉTODOS DE PAGO / CLIENTES ---
-        # En estos archivos, generalmente solo validamos que el ID no sea nulo
+            # C. Combinamos: ID no nulo Y Cantidad OK Y Fecha OK
+            mask_valid = df_unicos[col_id].notnull() & mask_cant & mask_fecha
         else:
-            col_id_general = df.columns[0] # Asumimos que la primera columna es el ID
-            mask_valid = df[col_id_general].notnull()
+            logging.warning(f"⚠️ Faltan columnas clave para validar rangos en: {nombre_archivo}")
 
-        # 2. Separación de datos
-        df_validos = df[mask_valid].copy()
-        df_rechazados = df[~mask_valid].copy()
-        
-        # 3. Guardado de rechazados (solo si hay errores)
-        if not df_rechazados.empty:
-            folder_rejected = "data/rejected"
-            os.makedirs(folder_rejected, exist_ok=True)
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            path_rechazados = os.path.join(folder_rejected, f"rechazados_{nombre_archivo}_{timestamp}.csv")
-            df_rechazados.to_csv(path_rechazados, index=False)
-            logging.warning(f"⚠️ {len(df_rechazados)} registros rechazados en {nombre_archivo}")
+    # 3. Separación de registros
+    df_buenos = df_unicos[mask_valid].copy()
+    df_malos = df_unicos[~mask_valid].copy()
+    
+    # Registramos por qué fallaron (opcional: podrías detallar el error)
+    if not df_malos.empty:
+        registrar_rechazos(df_malos, nombre_archivo, "fallo_rango_o_nulo")
+        logging.warning(f"🚨 {len(df_malos)} registros fuera de rango o con nulos en {nombre_archivo}")
 
-        return df_validos, df_rechazados
-
-    except Exception as e:
-        logging.error(f"❌ Error validando {nombre_archivo}: {e}")
-        return df, pd.DataFrame() # Ante la duda, dejamos pasar los datos para no frenar el flujo
+    return df_buenos, pd.concat([duplicados, df_malos])

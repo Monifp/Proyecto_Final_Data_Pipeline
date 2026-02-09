@@ -19,7 +19,7 @@ def verificar_integridad():
     logging.info("🛡️ Iniciando chequeo de integridad referencial...")
 
     try:
-        # 1. Verificar Ventas sin Clientes (Usando sk_cliente según el error)
+        # Verificar Ventas sin Clientes  
         query_clientes = """
             SELECT COUNT(*) 
             FROM fct_ventas f
@@ -34,8 +34,8 @@ def verificar_integridad():
         else:
             logging.info("✅ Integridad de Clientes: OK.")
 
-        # 2. Verificar Ventas sin Productos (Ajustá sk_producto si se llama así también)
-        # Si el error persiste con productos, revisá si es 'sk_producto' o 'id_producto'
+        # Verificar Ventas sin Productos  
+        
         query_productos = """
             SELECT COUNT(*) 
             FROM fct_ventas f

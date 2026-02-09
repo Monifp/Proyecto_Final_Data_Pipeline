@@ -1,27 +1,53 @@
-2026-02-07 00:52:37,846 - INFO - 🚀 --- INICIANDO PIPELINE ---
-2026-02-07 00:52:37,847 - INFO - 📄 Procesando: metodos_pago.csv
-2026-02-07 00:52:37,853 - INFO - 🔍 Validando reglas específicas para: metodos_pago.csv
-2026-02-07 00:52:37,856 - INFO - ✅ Archivo 'metodos_pago_limpio.csv' generado con 5 registros.
-2026-02-07 00:52:37,856 - INFO - 📄 Procesando: categorias.csv
-2026-02-07 00:52:37,858 - INFO - 🔍 Validando reglas específicas para: categorias.csv
-2026-02-07 00:52:37,859 - INFO - ✅ Archivo 'categorias_limpio.csv' generado con 8 registros.
-2026-02-07 00:52:37,859 - INFO - 📄 Procesando: clientes.csv
-2026-02-07 00:52:37,863 - INFO - 🔍 Validando reglas específicas para: clientes.csv
-2026-02-07 00:52:37,865 - INFO - ✅ Archivo 'clientes_limpio.csv' generado con 326 registros.
-2026-02-07 00:52:37,865 - INFO - 📄 Procesando: ventas.csv
-2026-02-07 00:52:37,884 - INFO - 🔍 Validando reglas específicas para: ventas.csv
-2026-02-07 00:52:37,890 - INFO - ✅ Archivo 'ventas_limpio.csv' generado con 3029 registros.
-2026-02-07 00:52:37,890 - INFO - 📄 Procesando: productos.csv
-2026-02-07 00:52:37,892 - INFO - 🔍 Validando reglas específicas para: productos.csv
-2026-02-07 00:52:37,894 - INFO - ✅ Archivo 'productos_limpio.csv' generado con 38 registros.
-2026-02-07 00:52:37,894 - INFO - ⏳ Iniciando carga en DuckDB...
-2026-02-07 00:52:37,974 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
-2026-02-07 00:52:37,982 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
-2026-02-07 00:52:38,042 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
-2026-02-07 00:52:38,056 - INFO - 🔒 Conexión a DuckDB cerrada.
-2026-02-07 00:52:38,067 - INFO - ✔ Carga al Modelo Estrella completada.
-2026-02-07 00:52:38,077 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
-2026-02-07 00:52:38,080 - INFO - ✅ Integridad de Clientes: OK.
-2026-02-07 00:52:38,081 - INFO - ✅ Integridad de Productos: OK.
-2026-02-07 00:52:38,082 - INFO - 🛡️ Integridad referencial verificada con éxito.
-2026-02-07 00:52:38,082 - INFO - 🏁 --- PIPELINE FINALIZADO EXITOSAMENTE ---
+2026-02-09 01:48:23,175 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 01:48:23,176 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 01:48:23,191 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 01:48:23,194 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 01:48:23,194 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 01:48:23,201 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 01:48:23,203 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 01:48:23,203 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 01:48:23,212 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 01:48:23,215 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 01:48:23,215 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 01:48:23,239 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 01:48:23,241 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_014823_ventas.csv
+2026-02-09 01:48:23,255 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 01:48:23,255 - INFO - 📄 Procesando: productos.csv
+2026-02-09 01:48:23,262 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 01:48:23,264 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 01:48:23,264 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 01:48:23,274 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 01:48:23,327 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 01:48:23,343 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 01:48:23,350 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 01:48:23,352 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 01:48:23,353 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 01:48:23,353 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 01:48:32,934 - INFO - 🛠️ Iniciando Proceso de Transformación Independiente...
+2026-02-09 01:48:32,934 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 01:48:32,942 - INFO - 📜 Ejecutando script de negocio: /Users/monyfpose/DataIan/Proyecto_Final/scripts/transformaciones.sql
+2026-02-09 01:48:32,952 - ERROR - ❌ Falló el proceso de transformación: Binder Error: Table "c" does not have a column named "nombre_cliente"
+
+Candidate bindings: : "nombre"
+2026-02-09 01:48:32,962 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 01:50:39,494 - INFO - 🛠️ Iniciando Proceso de Transformación Independiente...
+2026-02-09 01:50:39,494 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 01:50:39,502 - INFO - 📜 Ejecutando script de negocio: /Users/monyfpose/DataIan/Proyecto_Final/scripts/transformaciones.sql
+2026-02-09 01:50:39,506 - ERROR - ❌ Falló el proceso de transformación: Binder Error: Table "c" does not have a column named "nombre_cliente"
+
+Candidate bindings: : "nombre"
+2026-02-09 01:50:39,516 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 01:50:53,354 - INFO - 🛠️ Iniciando Proceso de Transformación Independiente...
+2026-02-09 01:50:53,354 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 01:50:53,363 - INFO - 📜 Ejecutando script de negocio: /Users/monyfpose/DataIan/Proyecto_Final/scripts/transformaciones.sql
+2026-02-09 01:50:53,370 - INFO - ✨ Transformaciones completadas con éxito.
+2026-02-09 01:50:53,381 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 01:52:16,258 - INFO - 🛠️ Iniciando Proceso de Transformación...
+2026-02-09 01:52:16,286 - INFO - ✨ SQL ejecutado con éxito.
+2026-02-09 01:52:16,297 - ERROR - ❌ Falló el proceso de transformación: Catalog Error: Table with name reporte_ventas_categoria does not exist!
+Did you mean "reporte_ventas_cliente"?
+
+LINE 1: SELECT * FROM reporte_ventas_categoria LIMIT 10
+                      ^
+2026-02-09 01:57:38,432 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 01:59:17,489 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
