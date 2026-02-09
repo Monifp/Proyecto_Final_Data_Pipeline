@@ -5,8 +5,10 @@ import logging
 import pandas as pd
 from datetime import datetime
 from config import DB_PATH, PATH_OUTPUT, LOG_DIR
+from utils import limpiar_texto, reparar_encoding 
 from validaciones import validate_data
 
+# Configuración de log
 LOG_LOAD = os.path.join(LOG_DIR, "load_incremental.log")
 logging.basicConfig(
     level=logging.INFO,
@@ -19,17 +21,19 @@ def ejecutar_carga_validada():
     start_time = time.time()
     archivo_origen = os.path.join(PATH_OUTPUT, "ventas2_limpio.csv")
     
-    logging.info(f"🚀 Iniciando CARGA INCREMENTAL CON TRANSFORMACIÓN: {archivo_origen}")
+    logging.info(f"🚀 Iniciando CARGA INCREMENTAL AUDITABLE: {archivo_origen}")
 
     try:
         if not os.path.exists(archivo_origen):
-            logging.error(f"❌ No se encontró: {archivo_origen}")
+            logging.error(f"❌ No se encontró el archivo procesado: {archivo_origen}")
             return
 
-        # 1. LEER DATOS
+        # 1. LECTURA Y LIMPIEZA TÉCNICA
         df = pd.read_csv(archivo_origen)
+        df = df.map(reparar_encoding)
+        df.columns = [limpiar_texto(col) for col in df.columns]
 
-        # 2. MAPEADO DE COLUMNAS
+        # 2. MAPEADO HACIA MODELO ESTRELLA (Corrección de nombres y caracteres rotos)
         mapeo = {
             'fecha': 'fecha_id',
             'm√©todo_pago': 'sk_metodo_pago',
@@ -41,32 +45,35 @@ def ejecutar_carga_validada():
         }
         df = df.rename(columns={k: v for k, v in mapeo.items() if k in df.columns})
 
-        # --- AQUÍ LA SOLUCIÓN AL ERROR DE FECHA ---
-        # Convertimos la columna al formato que DuckDB espera (YYYY-MM-DD)
+        # 3. TRANSFORMACIÓN DE FECHA (ISO para DuckDB)
         if 'fecha_id' in df.columns:
-            logging.info("📅 Transformando formato de fecha a ISO (YYYY-MM-DD)...")
-            # dayfirst=True es vital para que entienda que 05/05 es día/mes
             df['fecha_id'] = pd.to_datetime(df['fecha_id'], dayfirst=True).dt.strftime('%Y-%m-%d')
-        # ------------------------------------------
 
-        # 3. VALIDACIÓN DE NEGOCIO
-        if not validate_data(df, "ventas2_limpio.csv"):
-            logging.critical("🛑 VALIDACIÓN FALLIDA: Los datos no son aptos.")
+        # 4. VALIDACIÓN Y FILTRADO DE RECHAZADOS
+        df_buenos, df_malos = validate_data(df, "ventas2_limpio.csv")
+        
+        if df_buenos.empty:
+            logging.error("🛑 Sin registros válidos para cargar.")
             return
 
-        # 4. INSERCIÓN INCREMENTAL
-        columnas_finales = ", ".join(df.columns)
-        con.execute(f"INSERT INTO fct_ventas ({columnas_finales}) SELECT {columnas_finales} FROM df")
+        # 5. INSERCIÓN INCREMENTAL DE REGISTROS VÁLIDOS
+        columnas_finales = ", ".join(df_buenos.columns)
+        con.execute(f"INSERT INTO fct_ventas ({columnas_finales}) SELECT {columnas_finales} FROM df_buenos")
         
-        # 5. MÉTRICAS
+        # 6. MÉTRICAS FINALES
         duracion = round(time.time() - start_time, 4)
-        registros_nuevos = len(df)
         total_db = con.execute("SELECT COUNT(*) FROM fct_ventas").fetchone()[0]
-        
-        logging.info(f"✅ ÉXITO: {registros_nuevos} registros sumados. Total DB: {total_db}")
+        timestamp_carga = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Registro en Auditoría
+        con.execute("CREATE TABLE IF NOT EXISTS control_cargas (proceso TEXT, fecha_ejecucion TEXT, registros INTEGER, duracion_seg FLOAT)")
+        con.execute(f"INSERT INTO control_cargas VALUES ('Incremental Validated', '{timestamp_carga}', {len(df_buenos)}, {duracion})")
+
+        logging.info(f"✅ CARGA EXITOSA: {len(df_buenos)} sumados | ❌ RECHAZADOS: {len(df_malos)}")
+        logging.info(f"📊 Total en fct_ventas: {total_db} | Tiempo: {duracion}s")
 
     except Exception as e:
-        logging.error(f"❌ Error fatal: {e}")
+        logging.error(f"❌ Error fatal en el proceso: {e}")
     finally:
         con.close()
 

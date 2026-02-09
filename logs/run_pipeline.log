@@ -1,0 +1,27 @@
+2026-02-07 00:52:37,846 - INFO - 🚀 --- INICIANDO PIPELINE ---
+2026-02-07 00:52:37,847 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-07 00:52:37,853 - INFO - 🔍 Validando reglas específicas para: metodos_pago.csv
+2026-02-07 00:52:37,856 - INFO - ✅ Archivo 'metodos_pago_limpio.csv' generado con 5 registros.
+2026-02-07 00:52:37,856 - INFO - 📄 Procesando: categorias.csv
+2026-02-07 00:52:37,858 - INFO - 🔍 Validando reglas específicas para: categorias.csv
+2026-02-07 00:52:37,859 - INFO - ✅ Archivo 'categorias_limpio.csv' generado con 8 registros.
+2026-02-07 00:52:37,859 - INFO - 📄 Procesando: clientes.csv
+2026-02-07 00:52:37,863 - INFO - 🔍 Validando reglas específicas para: clientes.csv
+2026-02-07 00:52:37,865 - INFO - ✅ Archivo 'clientes_limpio.csv' generado con 326 registros.
+2026-02-07 00:52:37,865 - INFO - 📄 Procesando: ventas.csv
+2026-02-07 00:52:37,884 - INFO - 🔍 Validando reglas específicas para: ventas.csv
+2026-02-07 00:52:37,890 - INFO - ✅ Archivo 'ventas_limpio.csv' generado con 3029 registros.
+2026-02-07 00:52:37,890 - INFO - 📄 Procesando: productos.csv
+2026-02-07 00:52:37,892 - INFO - 🔍 Validando reglas específicas para: productos.csv
+2026-02-07 00:52:37,894 - INFO - ✅ Archivo 'productos_limpio.csv' generado con 38 registros.
+2026-02-07 00:52:37,894 - INFO - ⏳ Iniciando carga en DuckDB...
+2026-02-07 00:52:37,974 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-07 00:52:37,982 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-07 00:52:38,042 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-07 00:52:38,056 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-07 00:52:38,067 - INFO - ✔ Carga al Modelo Estrella completada.
+2026-02-07 00:52:38,077 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-07 00:52:38,080 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-07 00:52:38,081 - INFO - ✅ Integridad de Productos: OK.
+2026-02-07 00:52:38,082 - INFO - 🛡️ Integridad referencial verificada con éxito.
+2026-02-07 00:52:38,082 - INFO - 🏁 --- PIPELINE FINALIZADO EXITOSAMENTE ---
