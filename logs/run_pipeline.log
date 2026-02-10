@@ -51,3 +51,205 @@ LINE 1: SELECT * FROM reporte_ventas_categoria LIMIT 10
                       ^
 2026-02-09 01:57:38,432 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
 2026-02-09 01:59:17,489 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 02:18:29,960 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 02:18:29,961 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 02:18:29,975 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 02:18:29,980 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 02:18:29,980 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 02:18:29,985 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 02:18:29,987 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 02:18:29,987 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 02:18:29,996 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 02:18:29,999 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 02:18:29,999 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 02:18:30,023 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 02:18:30,026 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_021830_ventas.csv
+2026-02-09 02:18:30,038 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 02:18:30,038 - INFO - 📄 Procesando: productos.csv
+2026-02-09 02:18:30,045 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 02:18:30,047 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 02:18:30,047 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 02:18:30,059 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 02:18:30,111 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 02:18:30,128 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 02:18:30,136 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 02:18:30,137 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 02:18:30,138 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 02:18:30,139 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 02:18:49,090 - INFO - 🚀 Iniciando proceso de Ingesta Incremental...
+2026-02-09 02:18:49,094 - INFO - 📥 Archivo cargado: 311 registros detectados.
+2026-02-09 02:18:49,094 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 02:18:49,097 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_021849_ventas_nuevas.csv
+2026-02-09 02:18:49,118 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_021849_ventas_nuevas.csv
+2026-02-09 02:18:49,118 - WARNING - 🚨 297 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 02:18:49,119 - ERROR - ❌ No hay registros válidos tras la validación.
+2026-02-09 02:30:12,033 - INFO - 🚀 Iniciando proceso de Ingesta Incremental...
+2026-02-09 02:30:12,038 - INFO - 📥 Archivo cargado: 311 registros detectados.
+2026-02-09 02:30:12,038 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 02:30:12,045 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_023012_ventas_nuevas.csv
+2026-02-09 02:30:12,050 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_023012_ventas_nuevas.csv
+2026-02-09 02:30:12,050 - WARNING - 🚨 174 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 02:30:12,072 - INFO - ✅ CSV histórico actualizado. Total registros: 3123
+2026-02-09 02:30:12,085 - INFO - 💾 Actualizando tablas en DuckDB...
+2026-02-09 02:30:12,096 - ERROR - ❌ Error en la ingesta incremental: IO Error: No files found that match the pattern "data/processed/clientes_limpio.csv"
+
+LINE 4:         FROM (SELECT DISTINCT * FROM read_csv_auto('data/processed/clientes_limpio.csv', all_var...
+                                             ^
+2026-02-09 20:53:26,440 - INFO - 🚀 Iniciando Ingesta Incremental...
+2026-02-09 20:53:26,447 - INFO - 📥 Cargados 311 registros nuevos.
+2026-02-09 20:53:26,447 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 20:53:26,452 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_205326_ventas_nuevas.csv
+2026-02-09 20:53:26,459 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_205326_ventas_nuevas.csv
+2026-02-09 20:53:26,459 - WARNING - 🚨 174 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 20:53:26,484 - INFO - ✅ Histórico CSV actualizado (Total: 3246 filas).
+2026-02-09 20:53:26,496 - INFO - 💾 Actualizando tablas en DuckDB...
+2026-02-09 20:53:26,553 - INFO - ✅ Tablas sincronizadas en DuckDB.
+2026-02-09 20:53:26,573 - INFO - 🏁 Ingesta incremental finalizada exitosamente.
+2026-02-09 22:09:10,059 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 22:09:10,060 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 22:09:10,076 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 22:09:10,080 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 22:09:10,080 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 22:09:10,086 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 22:09:10,088 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 22:09:10,088 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 22:09:10,097 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 22:09:10,100 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 22:09:10,100 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 22:09:10,124 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 22:09:10,127 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_220910_ventas.csv
+2026-02-09 22:09:10,141 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 22:09:10,141 - INFO - 📄 Procesando: productos.csv
+2026-02-09 22:09:10,147 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 22:09:10,149 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 22:09:10,149 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 22:09:10,161 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 22:09:10,220 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 22:09:10,239 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 22:09:10,246 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 22:09:10,248 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 22:09:10,249 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 22:09:10,250 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 22:10:33,555 - INFO - 🚀 Iniciando Ingesta Incremental...
+2026-02-09 22:10:33,562 - INFO - 📥 Cargados 311 registros nuevos.
+2026-02-09 22:10:33,562 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 22:10:33,568 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_221033_ventas_nuevas.csv
+2026-02-09 22:10:33,574 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_221033_ventas_nuevas.csv
+2026-02-09 22:10:33,574 - WARNING - 🚨 174 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 22:10:33,594 - INFO - ✅ Histórico CSV actualizado (Total: 3123 filas).
+2026-02-09 22:10:33,605 - INFO - 💾 Actualizando tablas en DuckDB...
+2026-02-09 22:10:33,663 - INFO - ✅ Tablas sincronizadas en DuckDB.
+2026-02-09 22:10:33,682 - INFO - 🏁 Ingesta incremental finalizada exitosamente.
+2026-02-09 22:19:12,169 - INFO - 🚀 Iniciando Ingesta Incremental...
+2026-02-09 22:19:12,175 - INFO - 📥 Cargados 300 registros nuevos.
+2026-02-09 22:19:12,176 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 22:19:12,188 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_221912_ventas_nuevas.csv
+2026-02-09 22:19:12,188 - WARNING - 🚨 31 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 22:19:12,212 - INFO - ✅ Histórico CSV actualizado (Total: 3392 filas).
+2026-02-09 22:19:12,224 - INFO - 💾 Actualizando tablas en DuckDB...
+2026-02-09 22:19:12,281 - INFO - ✅ Tablas sincronizadas en DuckDB.
+2026-02-09 22:19:12,301 - INFO - 🏁 Ingesta incremental finalizada exitosamente.
+2026-02-09 22:20:50,808 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 22:20:50,808 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 22:20:50,819 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 22:20:50,821 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 22:20:50,821 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 22:20:50,826 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 22:20:50,827 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 22:20:50,827 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 22:20:50,836 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 22:20:50,839 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 22:20:50,839 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 22:20:50,862 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 22:20:50,865 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_222050_ventas.csv
+2026-02-09 22:20:50,876 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 22:20:50,876 - INFO - 📄 Procesando: productos.csv
+2026-02-09 22:20:50,883 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 22:20:50,885 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 22:20:50,885 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 22:20:50,893 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 22:20:50,934 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 22:20:50,951 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 22:20:50,959 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 22:20:50,961 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 22:20:50,961 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 22:20:50,962 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 22:21:08,387 - INFO - 🚀 Iniciando Ingesta Incremental...
+2026-02-09 22:21:08,391 - INFO - 📥 Cargados 300 registros nuevos.
+2026-02-09 22:21:08,391 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 22:21:08,397 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_222108_ventas_nuevas.csv
+2026-02-09 22:21:08,397 - WARNING - 🚨 31 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 22:21:08,419 - INFO - ✅ Histórico CSV actualizado (Total: 3269 filas).
+2026-02-09 22:21:08,428 - INFO - 💾 Actualizando tablas en DuckDB...
+2026-02-09 22:21:08,474 - INFO - ✅ Tablas sincronizadas en DuckDB.
+2026-02-09 22:21:08,492 - INFO - 🏁 Ingesta incremental finalizada exitosamente.
+2026-02-09 22:27:29,112 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 22:27:29,113 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 22:27:29,128 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 22:27:29,131 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 22:27:29,131 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 22:27:29,137 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 22:27:29,139 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 22:27:29,139 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 22:27:29,148 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 22:27:29,151 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 22:27:29,151 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 22:27:29,174 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 22:27:29,177 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_222729_ventas.csv
+2026-02-09 22:27:29,191 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 22:27:29,191 - INFO - 📄 Procesando: productos.csv
+2026-02-09 22:27:29,197 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 22:27:29,199 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 22:27:29,199 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 22:27:29,211 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 22:27:29,266 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 22:27:29,284 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 22:27:29,291 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 22:27:29,293 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 22:27:29,294 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 22:27:29,295 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 22:27:41,864 - INFO - 🚀 Iniciando Ingesta Incremental...
+2026-02-09 22:27:41,872 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 22:27:41,881 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_222741_ventas_nuevas.csv
+2026-02-09 22:27:41,882 - WARNING - 🚨 31 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 22:27:41,895 - INFO - ✅ Archivo maestro actualizado. Total registros: 3249
+2026-02-09 22:27:41,907 - INFO - 💾 Sincronizando DuckDB con los nuevos datos...
+2026-02-09 22:27:41,984 - INFO - 🏁 Proceso completado exitosamente.
+2026-02-09 22:28:42,034 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 22:34:54,105 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 22:35:24,600 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 22:35:49,960 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
+2026-02-09 22:47:56,388 - INFO - 🚀 --- INICIANDO PIPELINE: BRAIN & CODE ---
+2026-02-09 22:47:56,389 - INFO - 📄 Procesando: metodos_pago.csv
+2026-02-09 22:47:56,404 - INFO - 🔍 Validando calidad y rangos para: metodos_pago.csv
+2026-02-09 22:47:56,407 - INFO - ✅ Generado: metodos_pago_limpio.csv
+2026-02-09 22:47:56,407 - INFO - 📄 Procesando: categorias.csv
+2026-02-09 22:47:56,412 - INFO - 🔍 Validando calidad y rangos para: categorias.csv
+2026-02-09 22:47:56,414 - INFO - ✅ Generado: categorias_limpio.csv
+2026-02-09 22:47:56,414 - INFO - 📄 Procesando: clientes.csv
+2026-02-09 22:47:56,423 - INFO - 🔍 Validando calidad y rangos para: clientes.csv
+2026-02-09 22:47:56,426 - INFO - ✅ Generado: clientes_limpio.csv
+2026-02-09 22:47:56,426 - INFO - 📄 Procesando: ventas.csv
+2026-02-09 22:47:56,450 - INFO - 🔍 Validando calidad y rangos para: ventas.csv
+2026-02-09 22:47:56,453 - WARNING - 🚨 Registros rechazados (duplicados) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_duplicados_20260209_224756_ventas.csv
+2026-02-09 22:47:56,466 - INFO - ✅ Generado: ventas_limpio.csv
+2026-02-09 22:47:56,466 - INFO - 📄 Procesando: productos.csv
+2026-02-09 22:47:56,472 - INFO - 🔍 Validando calidad y rangos para: productos.csv
+2026-02-09 22:47:56,474 - INFO - ✅ Generado: productos_limpio.csv
+2026-02-09 22:47:56,474 - INFO - 🔌 Conectando a DuckDB en: /Users/monyfpose/DataIan/Proyecto_Final/data/database/Proyecto_final.db
+2026-02-09 22:47:56,486 - INFO - 📜 Ejecutando script de modelado: /Users/monyfpose/DataIan/Proyecto_Final/scripts/crear_modelo.sql
+2026-02-09 22:47:56,539 - INFO - ✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.
+2026-02-09 22:47:56,557 - INFO - 🔒 Conexión a DuckDB cerrada.
+2026-02-09 22:47:56,564 - INFO - 🛡️ Iniciando chequeo de integridad referencial...
+2026-02-09 22:47:56,566 - INFO - ✅ Integridad de Clientes: OK.
+2026-02-09 22:47:56,567 - INFO - ✅ Integridad de Productos: OK.
+2026-02-09 22:47:56,568 - INFO - 🏁 Pipeline finalizado exitosamente.
+2026-02-09 22:48:02,227 - INFO - 🚀 Iniciando proceso de Ingesta Incremental...
+2026-02-09 22:48:02,232 - INFO - 🔍 Validando calidad y rangos para: ventas_nuevas.csv
+2026-02-09 22:48:02,241 - WARNING - 🚨 Registros rechazados (fallo_rango_o_nulo) guardados en: /Users/monyfpose/DataIan/Proyecto_Final/data/rejected/rechazo_fallo_rango_o_nulo_20260209_224802_ventas_nuevas.csv
+2026-02-09 22:48:02,241 - WARNING - 🚨 31 registros fuera de rango o con nulos en ventas_nuevas.csv
+2026-02-09 22:48:02,255 - INFO - ✅ Archivo maestro actualizado. Registros totales: 3249
+2026-02-09 22:48:02,263 - INFO - 💾 Sincronizando DuckDB con lógica de vinculación robusta...
+2026-02-09 22:48:02,325 - WARNING - ⚠️ Se detectaron 54 ventas sin producto vinculado (ID no encontrado).
+2026-02-09 22:48:02,341 - INFO - 🏁 Fin del proceso incremental.
+2026-02-09 22:48:10,210 - INFO - 🛠️ Iniciando Proceso de Transformación y Reporte...
