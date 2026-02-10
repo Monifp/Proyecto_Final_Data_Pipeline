@@ -21,7 +21,7 @@ def ejecutar_pipeline():
         try:
             df = pd.read_csv(ruta, sep=None, engine='python')
 
-            # --- ANÁLISIS TÉCNICO POR CONSOLA ---
+            # --- Informacion inicial del DataFrame ---
             print(f"\n--- INFO: {nombre_original} ---")
             df.info()
             print(f"--- HEAD: {nombre_original} ---")
@@ -36,7 +36,7 @@ def ejecutar_pipeline():
             df_buenos, _ = validate_data(df, nombre_original)
             
             if not df_buenos.empty:
-                # Formato solicitado: nombre_limpio.csv
+                 
                 nombre_base = nombre_original.replace(".csv", "")
                 path_out = os.path.join(PATH_OUTPUT, f"{nombre_base}_limpio.csv")
                 df_buenos.to_csv(path_out, index=False)
@@ -50,7 +50,7 @@ def ejecutar_pipeline():
         ejecutar_modelo()
         
         if verificar_integridad():
-            # --- MENSAJE DE ÉXITO FINAL ---
+             
             print("\n" + "="*50)
             print("✨ PIPELINE FINALIZADO EXITOSAMENTE ✨")
             print("="*50)

@@ -35,7 +35,7 @@ def ejecutar_modelo():
          
         con.execute(sql_script)
         
-        logging.info("✨ Modelo de datos (Estrella) creado exitosamente en DuckDB.")
+        logging.info("✨ Modelo de datos creado exitosamente en DuckDB.")
 
     except Exception as e:
         logging.error(f"❌ Error durante la carga a DuckDB: {str(e)}")

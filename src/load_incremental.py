@@ -11,10 +11,9 @@ def normalizar_columnas(df):
     Estandariza los nombres de las columnas para evitar duplicados por 
     tildes, mayúsculas o errores de codificación de Excel.
     """
-    # 1. Todo a minúsculas y quitar espacios
+     
     df.columns = df.columns.str.lower().str.strip()
     
-    # 2. Diccionario de limpieza para caracteres especiales y tildes
     replacements = {
         'método_pago': 'metodo_pago',
         'm√©todo_pago': 'metodo_pago',
@@ -38,13 +37,13 @@ def actualizar_base_datos(con):
     csv_productos = os.path.join(PATH_OUTPUT, 'productos_limpio.csv')
     csv_ventas = os.path.join(PATH_OUTPUT, 'ventas_limpio.csv')
 
-    # 1. Dimensión Clientes
+    # Dimensión Clientes
     con.execute(f"""
         CREATE OR REPLACE TABLE dim_clientes AS 
         SELECT row_number() OVER () AS sk_cliente, * FROM (SELECT DISTINCT * FROM read_csv_auto('{csv_clientes}', all_varchar=True));
     """)
 
-    # 2. Dimensión Productos (Limpiamos ID_Producto para asegurar el JOIN)
+    # Dimensión Productos  
     con.execute(f"""
         CREATE OR REPLACE TABLE dim_productos AS 
         SELECT 
@@ -55,14 +54,14 @@ def actualizar_base_datos(con):
         FROM (SELECT DISTINCT * FROM read_csv_auto('{csv_productos}', all_varchar=True));
     """)
 
-    # 3. Dimensión Métodos de Pago (Generada dinámicamente)
+    # Dimensión Métodos de Pago 
     con.execute(f"""
         CREATE OR REPLACE TABLE dim_metodos_pago AS
         SELECT row_number() OVER () AS sk_metodo_pago, metodo
         FROM (SELECT DISTINCT metodo_pago AS metodo FROM read_csv_auto('{csv_ventas}', all_varchar=True));
     """)
 
-    # 4. Tabla de Hechos con JOINs blindados (Usando TRY_CAST para igualar 1 con 1.0)
+    # Tabla de Hechos  
     con.execute(f"""
         CREATE OR REPLACE TABLE fct_ventas AS 
         SELECT 
@@ -90,6 +89,11 @@ def actualizar_base_datos(con):
         logging.info("✅ Vinculación exitosa: Todas las ventas tienen su SK asignado.")
 
 def procesar_nuevos_datos():
+
+    """ Función principal para procesar nuevos datos de ventas, validarlos, 
+    actualizar el archivo maestro y sincronizar con DuckDB.
+    """
+
     setup_logging()
     logging.info("🚀 Iniciando proceso de Ingesta Incremental...")
 
@@ -101,29 +105,29 @@ def procesar_nuevos_datos():
         return
 
     try:
-        # Lectura con detección automática de separador y normalización
+        
         df_nuevo = pd.read_csv(input_path, sep=None, engine='python', encoding='utf-8')
         df_nuevo = normalizar_columnas(df_nuevo)
         
-        # Validaciones de calidad (fechas, nulos, etc.)
+         
         df_limpio_nuevo, _ = validate_data(df_nuevo, "ventas_nuevas.csv")
 
         if df_limpio_nuevo.empty:
             logging.error("❌ Los registros nuevos no superaron las validaciones.")
             return
 
-        # Unión con el histórico maestro
+        
         if os.path.exists(output_path):
             df_historico = pd.read_csv(output_path)
             df_historico = normalizar_columnas(df_historico)
             
-            # Concatenar y eliminar duplicados exactos
+             
             df_final = pd.concat([df_historico, df_limpio_nuevo], ignore_index=True)
             df_final = df_final.drop_duplicates()
         else:
             df_final = df_limpio_nuevo
 
-        # Guardar histórico actualizado
+        
         df_final.to_csv(output_path, index=False, encoding='utf-8')
         logging.info(f"✅ Archivo maestro actualizado. Registros totales: {len(df_final)}")
 
